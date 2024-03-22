@@ -13,6 +13,9 @@
 #include "ik.h"
 #include "meArm.h"
 #include <Servo.h>
+#include "PCA9685.h"
+
+
 bool setup_servo (ServoInfo& svo, const int n_min, const int n_max,
                   const float a_min, const float a_max)
 {
@@ -56,32 +59,27 @@ void meArm::begin(int pinBase, int pinShoulder, int pinElbow, int pinGripper) {
   _pinShoulder = pinShoulder;
   _pinElbow = pinElbow;
   _pinGripper = pinGripper;
-  _base.attach(_pinBase);
-  _shoulder.attach(_pinShoulder);
-  _elbow.attach(_pinElbow);
-  _gripper.attach(_pinGripper);
-
-  //goDirectlyTo(0, 100, 50);
-  goDirectlyToCylinder(0, 100, 50);
+  Wire.begin();
+  _servo.init(0x7f);
+  _servo.setAngle(_pinBase, 80);
+  _servo.setAngle(_pinShoulder, 30);
+  _servo.setAngle(_pinElbow, 160);
+  _servo.setAngle(_pinGripper, 0);
   openGripper();
 }
 
 void meArm::end() {
-  _base.detach();
-  _shoulder.detach();
-  _elbow.detach();
-  _gripper.detach();
 }
 
 //Set servos to reach a certain point directly without caring how we get there 
 void meArm::goDirectlyTo(float x, float y, float z) {
-  float radBase,radShoulder,radElbow;
+  float radBase, radShoulder, radElbow;
   if (solve(x, y, z, radBase, radShoulder, radElbow)) {
-    _base.write(angle2pwm(_svoBase,radBase));
-    _shoulder.write(angle2pwm(_svoShoulder,radShoulder));
-    _elbow.write(angle2pwm(_svoElbow,radElbow));
+    _servo.setAngle(_pinBase, angle2pwm(_svoBase, radBase));
+    _servo.setAngle(_pinShoulder, angle2pwm(_svoShoulder, radShoulder));
+    _servo.setAngle(_pinElbow, angle2pwm(_svoElbow, radElbow));
     _x = x; _y = y; _z = z;
-  }    
+  }   
 }
 
 //Travel smoothly from current point to another point
@@ -129,13 +127,13 @@ bool meArm::isReachable(float x, float y, float z) {
 
 //Grab something
 void meArm::openGripper() {
-  _gripper.write(angle2pwm(_svoGripper,pi/2));
+  _servo.setAngle(_pinGripper, 180);
   delay(300);
 }
 
 //Let go of something
 void meArm::closeGripper() {
-  _gripper.write(angle2pwm(_svoGripper,0));
+  _servo.setAngle(_pinGripper, 130);
   delay(300);
 }
 
