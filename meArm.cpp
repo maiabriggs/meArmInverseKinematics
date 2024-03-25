@@ -61,7 +61,7 @@ void meArm::begin(int pinBase, int pinShoulder, int pinElbow, int pinGripper) {
   _pinGripper = pinGripper;
   Wire.begin();
   _servo.init(0x7f);
-  _servo.setAngle(_pinBase, 80);
+  _servo.setAngle(_pinBase, 10);
   _servo.setAngle(_pinShoulder, 30);
   _servo.setAngle(_pinElbow, 160);
   _servo.setAngle(_pinGripper, 0);

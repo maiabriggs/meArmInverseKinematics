@@ -28,8 +28,8 @@ class meArm {
   public:
     //Full constructor uses calibration data, or can just give pins
     meArm(int sweepMinBase=0, int sweepMaxBase=180, float angleMinBase=-pi/4, float angleMaxBase=pi/4,
-      int sweepMinShoulder=0, int sweepMaxShoulder=100, float angleMinShoulder=pi/4, float angleMaxShoulder=3*pi/4,
-      int sweepMinElbow=180, int sweepMaxElbow=90, float angleMinElbow=pi/4, float angleMaxElbow=-pi/4,
+      int sweepMinShoulder=0, int sweepMaxShoulder=70, float angleMinShoulder=pi/4, float angleMaxShoulder=3*pi/4,
+      int sweepMinElbow=180, int sweepMaxElbow=140, float angleMinElbow=pi/4, float angleMaxElbow=-pi/4,
       int sweepMinGripper=130, int sweepMaxGripper=180, float angleMinGripper=pi/2, float angleMaxGripper=0);
     //required before running
     void begin(int pinBase, int pinShoulder, int pinElbow, int pinGripper);
@@ -56,6 +56,7 @@ class meArm {
 
     float getR();
     float getTheta();
+    
   private:
     void polarToCartesian(float theta, float r, float& x, float& y);
     float _x, _y, _z;
